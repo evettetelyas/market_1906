@@ -44,4 +44,29 @@ class Market
     haul
   end
 
+  def max_amount_sold(vendor, item, amount)
+    max = 0
+      if (vendor.inventory[item] - amount > 0)
+        max = amount
+      elsif (vendor.inventory[item] - amount < 0)
+        max = vendor.inventory[item]
+      end
+    max
+  end
+
+  def sell(item, amount)
+    return false if (vendors_that_sell(item).empty? || total_inventory[item] < amount)
+    return true if (!vendors_that_sell(item).empty? || total_inventory[item] > amount) &&
+      vendors_that_sell(item).each_with_object(amount) {|amount, vendor| (vendor.inventory[item] -= max_amount_sold(vendor, item, amount)) until amount < 0}
+    end
+
+
+  # def sell(item, amount)
+  #   return false if (vendors_that_sell(item).empty? || total_inventory[item] < amount)
+  #   return true if (!vendors_that_sell(item).empty? || total_inventory[item] > amount) &&
+  #     vendors_that_sell(item)[0].inventory[item] -= max_amount_sold(vendors_that_sell(item)[0], item, amount)
+  #
+  #     vendors_that_sell(item)[1].inventory[item] -= (amount - max_amount_sold(vendors_that_sell(item)[0], item, amount))
+  #   end
+
 end
